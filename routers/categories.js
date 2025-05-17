@@ -1,18 +1,34 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { Category } = require('../models/category');
+const { Category } = require("../models/category");
 
+router.get(`/`, async (req, res) => {
+  const categoryList = await Category.find();
 
-router.get(`/`, async(req, res)=> {
-    const categoryList = await Category.find()
+  if (!categoryList) {
+    res.status(500).json({
+      success: false,
+    });
+  }
 
-    if(!categoryList){
-        res.status(500).json({
-            success: false
-        })
-    }
-
-    res.status(200).json({success: true, data: categoryList});
+  res.status(200).json({ success: true, data: categoryList });
 });
 
-module.exports = router
+router.post(`/`, async (req, res) => {
+  const new_category = new Category({
+    name: req.body.name,
+    icon: req.body.icon,
+    color: req.body.color,
+  });
+
+  new_category 
+    .save()
+    .then((createdCategory) => {
+      res.status(200).json({ createdCategory });
+    })
+    .catch((err) => {
+        success: false
+    });
+});
+
+module.exports = router;
