@@ -3,4 +3,16 @@ const router = express.Router();
 const { Category } = require('../models/category');
 
 
+router.get(`/`, async(req, res)=> {
+    const categoryList = await Category.find()
 
+    if(!categoryList){
+        res.status(500).json({
+            success: false
+        })
+    }
+
+    res.status(200).json({success: true, data: categoryList});
+});
+
+module.exports = router
