@@ -8,9 +8,10 @@ const api = process.env.API_URL;
 const cors = require('cors');
 
 app.use(cors()); //apply CORS rules (allow other domains to make requests to my server)
-app.options('*', cors());
+// app.options('/*', cors()); //this cause an error 
 
 const productRouter = require("./routers/products");
+// const categoryRouter = require("./routers/categories");
 
 //middleware
 app.use(bodyParser.json());
@@ -18,6 +19,7 @@ app.use(morgan("tiny")); //morgan library is http requests logger
 
 //Routers
 app.use(`${api}/products`, productRouter);
+// app.use(`${api}/categories`, categoryRouter)
 
 mongoose
   .connect(process.env.MONGO_URL)
