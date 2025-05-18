@@ -21,14 +21,31 @@ router.post(`/`, async (req, res) => {
     color: req.body.color,
   });
 
-  new_category 
+  new_category
     .save()
     .then((createdCategory) => {
       res.status(200).json({ createdCategory });
     })
     .catch((err) => {
-        success: false
+      success: false;
     });
+});
+
+router.delete(`/`, (req, res) => {
+  const { id } = req.body;
+  // Category.findByIdAndDele
+  Category.findOneAndDelete(id)
+    .then(
+      res.status(200).json({
+        success: true
+      })
+    )
+    .catch((err) =>
+      res.status(500).json({
+        success: false,
+        "error": err
+      }),
+    );
 });
 
 module.exports = router;
