@@ -33,19 +33,51 @@ router.post(`/`, async (req, res) => {
 
 router.delete(`/`, (req, res) => {
   const { id } = req.body;
-  // Category.findByIdAndDele
   Category.findOneAndDelete(id)
     .then(
       res.status(200).json({
-        success: true
-      })
+        success: true,
+      }),
     )
     .catch((err) =>
       res.status(500).json({
         success: false,
-        "error": err
+        error: err,
       }),
     );
+});
+
+router.get(`/`, async (req, res) => {
+  const { id } = req.body;
+
+  const category = await Category.findById(id);
+
+  if (!category) {
+    res.status(500).json({
+      success: false,
+    });
+  }
+  res.status(200).send(category);
+});
+
+router.put(`/`, async (req, res) => {
+  const { id } = req.body;
+  const category = await Category.findByIdAndUpdate(id, {
+    "name": req.body.name,
+    "icon": req.body.icon,
+    "color": req.body.color
+  });
+
+  if(!category){
+    res.status(400).json({
+      success: false
+    })
+  }
+
+  res.status(200).json({
+    success: true
+  })
+
 });
 
 module.exports = router;
