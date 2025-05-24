@@ -2,20 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { Product } = require("../models/product");
 
-//this is how we response to the front-end when he ask us "GET json data"
-router.get(`/`, (req, res) => {
-  const json = {
-    id: 1,
-    name: "BOSHRA",
-    image: "some_url",
-  };
-  res.send(json);
-});
-
 router.post(`/newproduct`, (req, res) => {
   const new_product = new Product({
     name: req.body.name,
-    description: req.body.description, 
+    description: req.body.description,
     richDescription: req.body.richDescription,
     image: req.body.image,
     images: req.body.images,
@@ -23,10 +13,9 @@ router.post(`/newproduct`, (req, res) => {
     price: req.body.price,
     category: req.body.category,
     countInStock: req.body.countInStock,
-    rating: req.body.rating, 
+    rating: req.body.rating,
     isFeatured: req.body.isFeatures,
-    dateCreated: req.body.dateCreated
-
+    dateCreated: req.body.dateCreated,
   });
 
   //promise, save function is asynch, then means if it success, chatch means if any error
@@ -34,7 +23,7 @@ router.post(`/newproduct`, (req, res) => {
     .save()
     .then((createdProduct) => {
       res.status(201).json({
-        success: true
+        success: true,
       });
     })
     .catch((err) => {
@@ -45,6 +34,18 @@ router.post(`/newproduct`, (req, res) => {
     });
 
   // res.send(new_product);
+});
+
+router.get(`/`, async (req, res) => {
+  const { id } = req.body;
+  const product = await Product.findById(id);
+  if (!product) {
+    res.status(500).json({
+      success: false,
+      error: "Product ID is not exist",
+    });
+  }
+  res.send(product);
 });
 
 router.get(`/productlist`, async (req, res) => {
