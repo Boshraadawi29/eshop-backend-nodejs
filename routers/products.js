@@ -13,10 +13,9 @@ router.get(`/`, (req, res) => {
 });
 
 router.post(`/newproduct`, (req, res) => {
-  // const new_product = req.body;
   const new_product = new Product({
     name: req.body.name,
-    decription: req.body.decription, 
+    description: req.body.description, 
     richDescription: req.body.richDescription,
     image: req.body.image,
     images: req.body.images,
@@ -34,7 +33,9 @@ router.post(`/newproduct`, (req, res) => {
   new_product
     .save()
     .then((createdProduct) => {
-      res.status(201).json(createdProduct);
+      res.status(201).json({
+        success: true
+      });
     })
     .catch((err) => {
       res.status(500).json({
@@ -43,7 +44,7 @@ router.post(`/newproduct`, (req, res) => {
       });
     });
 
-  res.send(new_product);
+  // res.send(new_product);
 });
 
 router.get(`/productlist`, async (req, res) => {
