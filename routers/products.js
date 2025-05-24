@@ -14,11 +14,20 @@ router.get(`/`, (req, res) => {
 
 router.post(`/newproduct`, (req, res) => {
   // const new_product = req.body;
-  // console.log(new_product)
   const new_product = new Product({
     name: req.body.name,
+    decription: req.body.decription, 
+    richDescription: req.body.richDescription,
     image: req.body.image,
+    images: req.body.images,
+    brand: req.body.brand,
+    price: req.body.price,
+    category: req.body.category,
     countInStock: req.body.countInStock,
+    rating: req.body.rating, 
+    isFeatured: req.body.isFeatures,
+    dateCreated: req.body.dateCreated
+
   });
 
   //promise, save function is asynch, then means if it success, chatch means if any error
