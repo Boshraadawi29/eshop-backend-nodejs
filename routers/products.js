@@ -61,4 +61,15 @@ router.get(`/productlist`, async (req, res) => {
   res.send(productList);
 });
 
+router.get(`/productnames`, async (req, res) => {
+  const productList = await Product.find().select("name description -_id");
+  if (!productList) {
+    res.status(500).json({
+      success: false,
+    });
+  }
+
+  res.send(productList);
+});
+
 module.exports = router;
