@@ -83,4 +83,32 @@ router.get(`/productwithcategory`, async (req, res) => {
 
   res.send(product);
 });
+
+router.put(`/`, async (req, res) => {
+  const { id } = req.body;
+  const updatedProduct = await Product.findByIdAndUpdate(id, {
+    name: req.body.name,
+    description: req.body.description,
+    richDescription: req.body.richDescription,
+    image: req.body.image,
+    images: req.body.images,
+    brand: req.body.brand,
+    price: req.body.price,
+    category: req.body.category,
+    countInStock: req.body.countInStock,
+    rating: req.body.rating,
+    numReviews: req.body.numReviews,
+    isFeatured: req.body.isFeatured,
+    dateCreated: req.body.dateCreated,
+  });
+
+  if (!updatedProduct) {
+    res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.send(updatedProduct);
+});
 module.exports = router;
