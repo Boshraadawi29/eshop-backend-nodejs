@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Product } = require("../models/product");
+const { Category } = require("../models/category");
 
 router.post(`/newproduct`, (req, res) => {
   const new_product = new Product({
@@ -85,21 +86,17 @@ router.get(`/productwithcategory`, async (req, res) => {
 });
 
 router.put(`/`, async (req, res) => {
+  const category = await Category.findById(req.body.category);
+  if (!category) {
+    return res.status(404).json({
+      success: false,
+      message: "Invalid category ID",
+    });
+  }
+
   const { id } = req.body;
-  const updatedProduct = await Product.findByIdAndUpdate(id, {
-    name: req.body.name,
-    description: req.body.description,
-    richDescription: req.body.richDescription,
-    image: req.body.image,
-    images: req.body.images,
-    brand: req.body.brand,
-    price: req.body.price,
-    category: req.body.category,
-    countInStock: req.body.countInStock,
-    rating: req.body.rating,
-    numReviews: req.body.numReviews,
-    isFeatured: req.body.isFeatured,
-    dateCreated: req.body.dateCreated,
+  const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+    new: true,
   });
 
   if (!updatedProduct) {
