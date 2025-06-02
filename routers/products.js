@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Product } = require("../models/product");
 const { Category } = require("../models/category");
+const mongoose = require("mongoose");
 
 router.post(`/newproduct`, async (req, res) => {
   category = await Category.findById(req.body.category);
@@ -43,7 +44,7 @@ router.get(`/`, async (req, res) => {
   const { id } = req.body;
   const product = await Product.findById(id);
   if (!product) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: "Product ID is not exist",
     });
@@ -57,7 +58,7 @@ router.get(`/productlist`, async (req, res) => {
   // res.send(productList);
   const productList = await Product.find();
   if (!productList) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
     });
   }
@@ -67,7 +68,7 @@ router.get(`/productlist`, async (req, res) => {
 router.get(`/productnames`, async (req, res) => {
   const productList = await Product.find().select("name description -_id");
   if (!productList) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
     });
   }
@@ -79,7 +80,7 @@ router.get(`/productwithcategory`, async (req, res) => {
   const { id } = req.body;
   const product = await Product.findById(id).populate("category");
   if (!product) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
     });
   }
@@ -102,7 +103,7 @@ router.put(`/`, async (req, res) => {
   });
 
   if (!updatedProduct) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Product can not be updated",
     });
@@ -112,11 +113,28 @@ router.put(`/`, async (req, res) => {
 });
 
 router.delete(`/`, async (req, res) => {
-  const { id } = req.body.id;
-  deletedProduct = await Product.findOneAndDelete(id);
-  if (!deletedProduct) {
-    res.status(404).send("Product not find");
+  const { id } = req.body;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).send("Invalid ID");
   }
+  const deletedProduct = await Product.findOneAndDelete({_id: id});
+  if (!deletedProduct) {
+    return res.status(404).send("Product not find");
+  }
+  res.status(200).json({
+    result: deletedProduct,
+  });
+});
+
+router.get(`/count`, async (req, res) => {
+  //I am here
+  const productCount = await Product.countDocuments();
+  if (!productCount) {
+    return res.status(500).json({
+      success: false,
+    });
+  }
+  res.status(200).json({ success: true, count: productCount });
 });
 
 module.exports = router;
