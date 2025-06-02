@@ -3,7 +3,11 @@ const router = express.Router();
 const { Product } = require("../models/product");
 const { Category } = require("../models/category");
 
-router.post(`/newproduct`, (req, res) => {
+router.post(`/newproduct`, async (req, res) => {
+  category = await Category.findById(req.body.category);
+  if (!category) {
+    return res.status(400).send("Invalid Category");
+  }
   const new_product = new Product({
     name: req.body.name,
     description: req.body.description,
@@ -33,8 +37,6 @@ router.post(`/newproduct`, (req, res) => {
         success: false,
       });
     });
-
-  // res.send(new_product);
 });
 
 router.get(`/`, async (req, res) => {
@@ -100,12 +102,21 @@ router.put(`/`, async (req, res) => {
   });
 
   if (!updatedProduct) {
-    res.status(404).json({
+    res.status(500).json({
       success: false,
-      message: "Product not found",
+      message: "Product can not be updated",
     });
   }
 
   res.send(updatedProduct);
 });
+
+router.delete(`/`, async (req, res) => {
+  const { id } = req.body.id;
+  deletedProduct = await Product.findOneAndDelete(id);
+  if (!deletedProduct) {
+    res.status(404).send("Product not find");
+  }
+});
+
 module.exports = router;
