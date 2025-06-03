@@ -20,7 +20,7 @@ router.post(`/newproduct`, async (req, res) => {
     category: req.body.category,
     countInStock: req.body.countInStock,
     rating: req.body.rating,
-    isFeatured: req.body.isFeatures,
+    isFeatured: req.body.isFeatured,
     dateCreated: req.body.dateCreated,
   });
 
@@ -117,7 +117,7 @@ router.delete(`/`, async (req, res) => {
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).send("Invalid ID");
   }
-  const deletedProduct = await Product.findOneAndDelete({_id: id});
+  const deletedProduct = await Product.findOneAndDelete({ _id: id });
   if (!deletedProduct) {
     return res.status(404).send("Product not find");
   }
@@ -135,6 +135,16 @@ router.get(`/count`, async (req, res) => {
     });
   }
   res.status(200).json({ success: true, count: productCount });
+});
+
+router.get(`/featured`, async (req, res) => {
+  const featuredProducts = await Product.find({ isFeatured: true });
+
+  if (featuredProducts.length === 0) {
+    return res.status(404).json({ success: false });
+  }
+
+  res.status(200).send(featuredProducts)
 });
 
 module.exports = router;
