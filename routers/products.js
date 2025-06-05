@@ -148,12 +148,12 @@ router.get(`/featured`, async (req, res) => {
 });
 
 router.get(`/filtered`, async (req, res) => {
-  let filter = [];
+  let filter = {};
   if (req.query.categories) {
-    filter = req.query.categories.split(",");
+    filter = { category: req.query.categories.split(",") };
   }
 
-  const productList = await Product.find({ category: filter });
+  const productList = await Product.find(filter);
 
   if (!productList) {
     return res.status(500).json({
