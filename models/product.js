@@ -43,7 +43,7 @@ const productSchema = mongoose.Schema({
   },
   rating: {
     type: Number,
-    default: 0, 
+    default: 0,
   },
   numReviews: {
     type: Number,
@@ -56,6 +56,15 @@ const productSchema = mongoose.Schema({
   dateCreated: {
     type: Date,
     default: Date.now,
+  },
+});
+
+productSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false, // removes __v
+  transform: function (doc, ret) {
+    ret.id = ret._id;
+    delete ret._id;
   },
 });
 
