@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 router.post(`/newproduct`, async (req, res) => {
   category = await Category.findById(req.body.category);
   if (!category) {
-    return res.status(400).send("Invalid Category");
+    return res.status(400).json({ message: "Invalid Category" });
   }
   const new_product = new Product({
     name: req.body.name,
@@ -49,7 +49,7 @@ router.get(`/`, async (req, res) => {
       error: "Product ID is not exist",
     });
   }
-  res.send(product);
+  res.json(product);
 });
 
 router.get(`/productlist`, async (req, res) => {
@@ -62,7 +62,7 @@ router.get(`/productlist`, async (req, res) => {
       success: false,
     });
   }
-  res.send(productList);
+  res.json(productList);
 });
 
 router.get(`/productnames`, async (req, res) => {
@@ -73,7 +73,7 @@ router.get(`/productnames`, async (req, res) => {
     });
   }
 
-  res.send(productList);
+  res.json(productList);
 });
 
 router.get(`/productwithcategory`, async (req, res) => {
@@ -85,7 +85,7 @@ router.get(`/productwithcategory`, async (req, res) => {
     });
   }
 
-  res.send(product);
+  res.json(product);
 });
 
 router.put(`/`, async (req, res) => {
@@ -109,17 +109,17 @@ router.put(`/`, async (req, res) => {
     });
   }
 
-  res.send(updatedProduct);
+  res.json(updatedProduct);
 });
 
 router.delete(`/`, async (req, res) => {
   const { id } = req.body;
   if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).send("Invalid ID");
+    return res.status(400).json({ message: "Invalid ID" });
   }
   const deletedProduct = await Product.findOneAndDelete({ _id: id });
   if (!deletedProduct) {
-    return res.status(404).send("Product not find");
+    return res.status(404).json({ message: "Product not find" });
   }
   res.status(200).json({
     result: deletedProduct,
@@ -144,13 +144,13 @@ router.get(`/featured`, async (req, res) => {
     return res.status(404).json({ success: false });
   }
 
-  res.status(200).send(featuredProducts);
+  res.status(200).json(featuredProducts);
 });
 
 router.get(`/filtered`, async (req, res) => {
   let filter = {};
   if (req.query.categories) {
-    filter = { category: req.query.categories.split(",") };
+    filter = { category: req.query.caftegories.split(",") };
   }
 
   const productList = await Product.find(filter);
@@ -160,7 +160,7 @@ router.get(`/filtered`, async (req, res) => {
       success: false,
     });
   }
-  res.status(200).send(productList);
+  res.status(200).json(productList);
 });
 
 module.exports = router;

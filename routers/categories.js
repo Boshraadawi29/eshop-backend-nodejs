@@ -57,7 +57,7 @@ router.get(`/`, async (req, res) => {
       success: false,
     });
   }
-  res.status(200).send(category);
+  res.status(200).json(category);
 });
 
 router.put(`/`, async (req, res) => {
