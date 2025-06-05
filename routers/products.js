@@ -144,7 +144,23 @@ router.get(`/featured`, async (req, res) => {
     return res.status(404).json({ success: false });
   }
 
-  res.status(200).send(featuredProducts)
+  res.status(200).send(featuredProducts);
+});
+
+router.get(`/filtered`, async (req, res) => {
+  let filter = [];
+  if (req.query.categories) {
+    filter = req.query.categories.split(",");
+  }
+
+  const productList = await Product.find({ category: filter });
+
+  if (!productList) {
+    return res.status(500).json({
+      success: false,
+    });
+  }
+  res.status(200).send(productList);
 });
 
 module.exports = router;
