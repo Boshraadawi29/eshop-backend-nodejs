@@ -1,6 +1,6 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Category } = require("../models/category");
+const { Category } = require('../models/category');
 
 router.get(`/`, async (req, res) => {
   const categoryList = await Category.find();
@@ -63,21 +63,20 @@ router.get(`/`, async (req, res) => {
 router.put(`/`, async (req, res) => {
   const { id } = req.body;
   const category = await Category.findByIdAndUpdate(id, {
-    "name": req.body.name,
-    "icon": req.body.icon,
-    "color": req.body.color
+    name: req.body.name,
+    icon: req.body.icon,
+    color: req.body.color,
   });
 
-  if(!category){
+  if (!category) {
     res.status(400).json({
-      success: false
-    })
+      success: false,
+    });
   }
 
   res.status(200).json({
-    success: true
-  })
-
+    success: true,
+  });
 });
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const categorySchema = mongoose.Schema({
   name: {
@@ -13,7 +13,7 @@ const categorySchema = mongoose.Schema({
   },
 });
 
-categorySchema.set("toJSON", {
+categorySchema.set('toJSON', {
   virtuals: true,
   versionKey: false, // removes __v
   transform: function (doc, ret) {
@@ -22,4 +22,4 @@ categorySchema.set("toJSON", {
   },
 });
 
-exports.Category = mongoose.model("Category", categorySchema);
+exports.Category = mongoose.model('Category', categorySchema);

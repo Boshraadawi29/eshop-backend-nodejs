@@ -1,13 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Product } = require("../models/product");
-const { Category } = require("../models/category");
-const mongoose = require("mongoose");
+const { Product } = require('../models/product');
+const { Category } = require('../models/category');
+const mongoose = require('mongoose');
 
 router.post(`/newproduct`, async (req, res) => {
   category = await Category.findById(req.body.category);
   if (!category) {
-    return res.status(400).json({ message: "Invalid Category" });
+    return res.status(400).json({ message: 'Invalid Category' });
   }
   const new_product = new Product({
     name: req.body.name,
@@ -46,7 +46,7 @@ router.get(`/`, async (req, res) => {
   if (!product) {
     return res.status(500).json({
       success: false,
-      error: "Product ID is not exist",
+      error: 'Product ID is not exist',
     });
   }
   res.json(product);
@@ -66,7 +66,7 @@ router.get(`/productlist`, async (req, res) => {
 });
 
 router.get(`/productnames`, async (req, res) => {
-  const productList = await Product.find().select("name description -_id");
+  const productList = await Product.find().select('name description -_id');
   if (!productList) {
     return res.status(500).json({
       success: false,
@@ -78,7 +78,7 @@ router.get(`/productnames`, async (req, res) => {
 
 router.get(`/productwithcategory`, async (req, res) => {
   const { id } = req.body;
-  const product = await Product.findById(id).populate("category");
+  const product = await Product.findById(id).populate('category');
   if (!product) {
     return res.status(500).json({
       success: false,
@@ -93,7 +93,7 @@ router.put(`/`, async (req, res) => {
   if (!category) {
     return res.status(404).json({
       success: false,
-      message: "Invalid category ID",
+      message: 'Invalid category ID',
     });
   }
 
@@ -105,7 +105,7 @@ router.put(`/`, async (req, res) => {
   if (!updatedProduct) {
     return res.status(500).json({
       success: false,
-      message: "Product can not be updated",
+      message: 'Product can not be updated',
     });
   }
 
@@ -115,11 +115,11 @@ router.put(`/`, async (req, res) => {
 router.delete(`/`, async (req, res) => {
   const { id } = req.body;
   if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({ message: "Invalid ID" });
+    return res.status(400).json({ message: 'Invalid ID' });
   }
   const deletedProduct = await Product.findOneAndDelete({ _id: id });
   if (!deletedProduct) {
-    return res.status(404).json({ message: "Product not find" });
+    return res.status(404).json({ message: 'Product not find' });
   }
   res.status(200).json({
     result: deletedProduct,
@@ -150,7 +150,7 @@ router.get(`/featured`, async (req, res) => {
 router.get(`/filtered`, async (req, res) => {
   let filter = {};
   if (req.query.categories) {
-    filter = { category: req.query.caftegories.split(",") };
+    filter = { category: req.query.caftegories.split(',') };
   }
 
   const productList = await Product.find(filter);
