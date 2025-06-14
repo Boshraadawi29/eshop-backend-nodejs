@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const router = express.Router();
 const { User } = require('../models/user');
 
@@ -91,4 +91,25 @@ router.get(`/:id`, async (req, res) => {
   }
 });
 
+router.get(`/`, async (req, res) => {
+  try {
+    const userList = await User.find().select('-password');
+
+    if (!userList) {
+      return res.status(404).json({
+        success: false,
+        message: 'Can not get user list',
+      });
+    }
+    res.status(200).json({
+      success: true,
+      date: userList,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: fales,
+      message: 'Server error',
+    });
+  }
+});
 module.exports = router;
