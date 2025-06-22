@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const authJWT = require('./helpers/jwt');
 
 const productRouter = require('./routers/products');
 const categoryRouter = require('./routers/categories');
@@ -27,6 +28,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny')); // Log HTTP requests
+app.use(authJWT)
 
 //Routers
 app.use(`${api}/products`, productRouter);
