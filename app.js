@@ -28,7 +28,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny')); // Log HTTP requests
-app.use(authJWT)
+app.use(authJWT())
 
 //Routers
 app.use(`${api}/products`, productRouter);
