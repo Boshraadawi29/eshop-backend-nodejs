@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authJWT = require('./helpers/jwt');
+const errorHandler = require('./helpers/error-handler')
 
 const productRouter = require('./routers/products');
 const categoryRouter = require('./routers/categories');
@@ -37,10 +38,7 @@ app.use(`${api}/users`, userRouter);
 // app.use(`${api}/orders`, ordersRoutes);
 
 // Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('🔥 Unexpected Error:', err.stack);
-  res.status(500).json({ success: false, message: 'Something went wrong!' });
-});
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
