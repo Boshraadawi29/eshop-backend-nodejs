@@ -2,15 +2,18 @@ const { expressjwt: expressJWT } = require('express-jwt');
 
 function authJWT() {
   // const secret = process.env.JWT_SECRET;
+  const api = process.env.API_URL;
   return expressJWT({
     secret: process.env.JWT_SECRET,
     algorithms: ['HS256'],
   }).unless({
-    path: [
-      '/api/v1/users/login',
-      '/api/v1/users/register'
-    ]
-  })
+        path: [
+            {url: /\/api\/v1\/products(.*)/ , methods: ['GET', 'OPTIONS'] },
+            {url: /\/api\/v1\/categories(.*)/ , methods: ['GET', 'OPTIONS'] },
+            `${api}/users/login`,
+            `${api}/users/register`,
+        ]
+  });
 }
 
 module.exports = authJWT;
