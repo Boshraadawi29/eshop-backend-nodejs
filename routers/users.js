@@ -6,6 +6,33 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const { User } = require('../models/user');
 
+router.post(`/register`, async (req, res) => {
+  let user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: await bcrypt.hash(req.body.password, 10),
+    phone: req.body.phone,
+    isAdmin: req.body.isAdmin,
+    street: req.body.street,
+    apartment: req.body.apartment,
+    zip: req.body.zip,
+    city: req.body.city,
+    country: req.body.country,
+  });
+
+  user = await user.save();
+
+  if (!user) {
+    return res.status(500).json({
+      success: false,
+      message: 'User cannot be created',
+    });
+  }
+
+  res.status(200).json(user);
+});
+
+//check if isAdmin
 router.post(`/`, async (req, res) => {
   const {
     name,
@@ -137,8 +164,8 @@ router.post(`/login`, async (req, res) => {
     );
 
     res.status(200).json({
-      data: token
-    })
+      data: token,
+    });
   } else {
     res.status(400).json({
       message: 'Incorrect password',
