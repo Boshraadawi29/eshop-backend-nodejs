@@ -9,7 +9,7 @@ const errorHandler = require('./helpers/error-handler')
 
 const productRouter = require('./routers/products');
 const categoryRouter = require('./routers/categories');
-const userRouter = require('./routers/users');
+const userRoutes = require('./routes/userRoutes')
 // const ordersRoutes = require('./routes/orders');
 
 // Validate environment variables
@@ -34,7 +34,8 @@ app.use(authJWT())
 //Routers
 app.use(`${api}/products`, productRouter);
 app.use(`${api}/categories`, categoryRouter);
-app.use(`${api}/users`, userRouter);
+app.use(`${api}/users`, userRoutes)
+
 // app.use(`${api}/orders`, ordersRoutes);
 
 // Global Error Handler
