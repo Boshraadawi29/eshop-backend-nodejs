@@ -8,7 +8,8 @@ const authJWT = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler')
 
 const productRoutes = require('./routes/productRoutes') 
-const categoryRouter = require('./routers/categories');
+// const categoryRouter = require('./routers/categories');
+const categoryRoutes = require('./routes/categoryRoutes')
 const userRoutes = require('./routes/userRoutes')
 // const ordersRoutes = require('./routes/orders');
 
@@ -33,7 +34,7 @@ app.use(authJWT())
 
 //Routers
 app.use(`${api}/products`, productRoutes);
-app.use(`${api}/categories`, categoryRouter);
+app.use(`${api}/categories`, categoryRoutes);
 app.use(`${api}/users`, userRoutes)
 
 // app.use(`${api}/orders`, ordersRoutes);
