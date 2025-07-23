@@ -7,7 +7,7 @@ const cors = require('cors');
 const authJWT = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler')
 
-const productRouter = require('./routers/products');
+const productRoutes = require('./routes/productRoutes') 
 const categoryRouter = require('./routers/categories');
 const userRoutes = require('./routes/userRoutes')
 // const ordersRoutes = require('./routes/orders');
@@ -32,7 +32,7 @@ app.use(morgan('tiny')); // Log HTTP requests
 app.use(authJWT())
 
 //Routers
-app.use(`${api}/products`, productRouter);
+app.use(`${api}/products`, productRoutes);
 app.use(`${api}/categories`, categoryRouter);
 app.use(`${api}/users`, userRoutes)
 

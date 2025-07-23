@@ -1,15 +1,15 @@
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 const { Product } = require('../models/product');
 const { Category } = require('../models/category');
 
 // Create New Product
-router.post(`/newproduct`, async (req, res) => {
-  category = await Category.findById(req.body.category);
-  if (!category) {
-    return res.status(400).json({ message: 'Invalid Category' });
+exports.createProduct = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.body.category)) {
+    return res.status(400).json({ message: 'Invalid category ID' });
   }
+  const category = await Category.findById(req.body.category);
+  if (!category) return res.status(400).json({ message: 'Invalid Category' });
+
   const new_product = new Product({
     name: req.body.name,
     description: req.body.description,
@@ -25,25 +25,17 @@ router.post(`/newproduct`, async (req, res) => {
     dateCreated: req.body.dateCreated,
   });
 
-  //promise, save function is asynch, then means if it success, chatch means if any error
-  new_product
-    .save()
-    .then((createdProduct) => {
-      res.status(201).json({
-        success: true,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
-        success: false,
-      });
-    });
-});
+  try {
+    await new_product.save();
+    res.status(201).json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err, success: false });
+  }
+};
 
-// Get Product by ID (from query instead of body is more standard)
-router.get('/', async (req, res) => {
-  const { id } = req.query;
+// Get Product by ID
+exports.getProductById = async (req, res) => {
+  const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
     return res
@@ -62,10 +54,10 @@ router.get('/', async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error });
   }
-});
+};
 
 // Get All Products
-router.get('/productlist', async (req, res) => {
+exports.getAllProducts = async (req, res) => {
   try {
     const productList = await Product.find();
     res.json({ success: true, data: productList });
@@ -74,24 +66,26 @@ router.get('/productlist', async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Failed to fetch products', error });
   }
-});
+};
 
-// // Get Product Names and Descriptions
-// router.get('/productnames', async (req, res) => {
-//   try {
-//     const productList = await Product.find().select('name description -_id');
-//     res.json({ success: true, data: productList });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: 'Failed to fetch product names',
-//       error,
-//     });
-//   }
-// });
+// Get Product Names and Descriptions
+exports.getProductNames = async (req, res) => {
+  try {
+    const productList = await Product.find().select('name description -_id');
+    res.json({ success: true, data: productList });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'Failed to fetch product names',
+        error,
+      });
+  }
+};
 
-// Get Product with Category Populated
-router.get('/productwithcategory', async (req, res) => {
+// Get Product with Category
+exports.getProductWithCategory = async (req, res) => {
   const { id } = req.query;
 
   if (!mongoose.isValidObjectId(id)) {
@@ -113,10 +107,10 @@ router.get('/productwithcategory', async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Error fetching product', error });
   }
-});
+};
 
 // Update Product
-router.put('/', async (req, res) => {
+exports.  updateProduct = async (req, res) => {
   const { id, category: categoryId } = req.body;
 
   if (!mongoose.isValidObjectId(id) || !mongoose.isValidObjectId(categoryId)) {
@@ -143,12 +137,11 @@ router.put('/', async (req, res) => {
       rating: req.body.rating,
       isFeatured: req.body.isFeatured,
     };
+
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       { $set: updateFields },
-      {
-        new: true,
-      },
+      { new: true },
     );
     if (!updatedProduct)
       return res
@@ -161,10 +154,10 @@ router.put('/', async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Failed to update product', error });
   }
-});
+};
 
 // Delete Product
-router.delete('/', async (req, res) => {
+exports.deleteProduct = async (req, res) => {
   const { id } = req.body;
 
   if (!mongoose.isValidObjectId(id)) {
@@ -184,10 +177,10 @@ router.delete('/', async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Failed to delete product', error });
   }
-});
+};
 
-// Get Product Count
-router.get('/count', async (req, res) => {
+// Count Products
+exports.getProductCount = async (req, res) => {
   try {
     const count = await Product.countDocuments();
     res.json({ success: true, count });
@@ -196,10 +189,10 @@ router.get('/count', async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Failed to count products', error });
   }
-});
+};
 
 // Get Featured Products
-router.get('/featured', async (req, res) => {
+exports.getFeaturedProducts = async (req, res) => {
   try {
     const featuredProducts = await Product.find({ isFeatured: true });
     if (featuredProducts.length === 0) {
@@ -209,16 +202,18 @@ router.get('/featured', async (req, res) => {
     }
     res.json({ success: true, data: featuredProducts });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to get featured products',
-      error,
-    });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'Failed to get featured products',
+        error,
+      });
   }
-});
+};
 
-// Get Products Filtered by Category
-router.get('/filtered', async (req, res) => {
+// Filter Products by Category
+exports.getFilteredProducts = async (req, res) => {
   try {
     let filter = {};
     if (req.query.categories) {
@@ -235,6 +230,4 @@ router.get('/filtered', async (req, res) => {
       .status(500)
       .json({ success: false, message: 'Failed to filter products', error });
   }
-});
-
-module.exports = router;
+};
