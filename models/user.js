@@ -47,7 +47,7 @@ userSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 
-userSchema.set('toString', {
+userSchema.set('toJson', {  
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
@@ -58,3 +58,4 @@ userSchema.set('toString', {
 
 exports.User = mongoose.model('User', userSchema);
 exports.userSchema = userSchema;
+  
