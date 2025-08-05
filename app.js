@@ -8,10 +8,9 @@ const authJWT = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler')
 
 const productRoutes = require('./routes/productRoutes') 
-// const categoryRouter = require('./routers/categories');
 const categoryRoutes = require('./routes/categoryRoutes')
 const userRoutes = require('./routes/userRoutes')
-// const ordersRoutes = require('./routes/orders');
+const orderRoutes = require('./routes/orderRoutes');
 
 // Validate environment variables
 if (!process.env.MONGO_URL || !process.env.API_URL || !process.env.PORT) {
@@ -36,7 +35,7 @@ app.use(authJWT())
 app.use(`${api}/products`, productRoutes);
 app.use(`${api}/categories`, categoryRoutes);
 app.use(`${api}/users`, userRoutes)
-
+app.use(`${api}/orders`, orderRoutes)
 // app.use(`${api}/orders`, ordersRoutes);
 
 // Global Error Handler

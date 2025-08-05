@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const orderSchema = mongoose.Schema({
   orderItems: [
     {
-      type: mongoose.Schema.Types.objectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'OrderItem',
       require: true,
     },
@@ -51,16 +51,15 @@ const orderSchema = mongoose.Schema({
   },
 });
 
-userSchema.virtual('id').get(function () {
+orderSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 
-userSchema.set('toJson', {
+orderSchema.set('toJson', {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
     delete ret._id;
   },
 });
-
 exports.Order = mongoose.model('Order', orderSchema);
