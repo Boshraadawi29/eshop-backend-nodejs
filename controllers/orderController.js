@@ -29,6 +29,36 @@ exports.createOrder = async (req, res) => {
     }),
   );
 
+  const totalPrices = await Promise.all(
+    orderItemsIds.map(async (orderItemId) => {
+      orderItem = await OrderItem.findById(orderItemId).populate(
+        'product',
+        'price',
+      );
+
+      if (!orderItem) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: `OrderItem with id ${orderItemId} not found`,
+          });
+      }
+
+      if (!orderItem.product) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: `Product not found for OrderItem ${orderItemId}`,
+          });
+      }
+
+      return orderItem.quantity * orderItem.product.price;
+    }),
+  );
+
+  const totalPrice = totalPrices.reduce((acc, curr) => acc + curr, 0);
   const order = new Order({
     orderItems: orderItemsIds,
     shippingAddress1: req.body.shippingAddress1,
@@ -37,14 +67,14 @@ exports.createOrder = async (req, res) => {
     zip: req.body.zip,
     country: req.body.country,
     status: req.body.status,
-    totalPrice: req.body.totalPrice,
+    totalPrice: totalPrice,
     date: req.body.date,
     user: req.body.user,
     phone: req.body.phone,
   });
   try {
     const createdOrder = await order.save();
-    res.status(200).json({ order });
+    res.status(200).json({ createdOrder });
   } catch (err) {
     res.status(500).json({
       success: false,
